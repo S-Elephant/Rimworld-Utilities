@@ -607,21 +607,23 @@ namespace SquirtingElephant.Helpers
 #endregion
 
 #region Middle Methods
-        public static T GetDefByDefName<T>(string recipeDefName, bool errorOnNotFound = true) where T : Def
+    public static T GetDefByDefName<T>(string defName, bool errorOnNotFound = true) where T : Def
+    {
+        T def = DefDatabase<T>.GetNamed(defName, errorOnNotFound);
+        if (def != null)
         {
-            T def = DefDatabase<T>.GetNamed(recipeDefName);
-            if (def != null)
-            {
-                return def;
-            }
-
-            if (errorOnNotFound)
-            {
-                LogDefNotFoundError(recipeDefName, typeof(T).Name);
-            }
-
-            return null;
+            return def;
         }
+
+        if (errorOnNotFound)
+        {
+            LogDefNotFoundError(defName, typeof(T).Name);
+        }
+
+        return null;
+    }
+
+    public static bool DefExistsByDefName<T>(string defName) where T : Def => DefDatabase<T>.GetNamed(defName, false) != null;
 
         public static void SetThingStat(string thingDefName, string statDefName, float newValue)
         {
